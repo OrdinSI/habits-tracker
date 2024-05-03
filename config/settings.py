@@ -163,13 +163,12 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8000',
+    "http://localhost:8000",
     "http://localhost",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost",
-
 ]
 
 CORS_ALLOW_ALL_ORIGINS = False

@@ -1,3 +1,31 @@
-from django.shortcuts import render
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.viewsets import ModelViewSet
 
-# Create your views here.
+from users.models import User
+from users.permissions import IsOwner, IsAdmin
+from users.serializers import UserSerializer
+
+
+class UserViewSet(ModelViewSet):
+    """ViewSet for User model"""
+
+    serializer_class = UserSerializer
+    queryset = User.objects.all()
+
+    def perform_create(self, serializer):
+        user = serializer.save(is_active=True)
+        user.set_password(user.password)
+        user.save()
+
+    def get_permissions(self):
+        if self.action == "create":
+            self.permission_classes = [AllowAny]
+        else:
+            self.permission_classes = [IsAuthenticated, IsOwner | IsAdmin]
+        return super().get_permissions()
+
+    def get_queryset(self):
+        admin_permissions = IsAdmin()
+        if admin_permissions.has_permission(self.request, self):
+            return User.objects.all()
+        return User.objects.filter(id=self.request.user.id)
