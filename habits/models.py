@@ -1,3 +1,29 @@
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
-# Create your models here.
+from config import settings
+
+
+class Habit(models.Model):
+    """Model definition for Habit."""
+
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name="пользователь",
+                              **settings.NULLABLE)
+    action = models.CharField(max_length=250, verbose_name="действие")
+    location = models.CharField(max_length=250, verbose_name="место")
+    time = models.TimeField(verbose_name="время")
+
+    is_pleasant = models.BooleanField(verbose_name="признак приятности", default=False)
+    linked_habit = models.ForeignKey("self", on_delete=models.SET_NULL, verbose_name="связь", **settings.NULLABLE)
+    frequency = models.IntegerField(default=1, verbose_name="периодичность(дни)",
+                                    validators=[MinValueValidator(1), MaxValueValidator(7)])
+    reward = models.CharField(max_length=250, verbose_name="награда", **settings.NULLABLE)
+    execution_time = models.IntegerField(verbose_name="время на выполнение")
+    is_publicity = models.BooleanField(verbose_name="признак публикации", default=False)
+
+    def __str__(self):
+        return self.action
+
+    class Meta:
+        verbose_name = "привычка"
+        verbose_name_plural = "привычки"
