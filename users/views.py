@@ -25,7 +25,6 @@ class UserViewSet(ModelViewSet):
         return super().get_permissions()
 
     def get_queryset(self):
-        admin_permissions = IsAdmin()
-        if admin_permissions.has_permission(self.request, self):
+        if self.request.user.is_superuser:
             return User.objects.all()
         return User.objects.filter(id=self.request.user.id)
