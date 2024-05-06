@@ -29,7 +29,8 @@ class Habit(models.Model):
     reward = models.CharField(
         max_length=250, verbose_name="награда", **settings.NULLABLE
     )
-    execution_time = models.IntegerField(verbose_name="время на выполнение")
+    execution_time = models.IntegerField(default=10, verbose_name="время на выполнение(сек)",
+                                         validators=[MinValueValidator(1), MaxValueValidator(120)])
     is_publicity = models.BooleanField(verbose_name="признак публикации", default=False)
 
     def __str__(self):
