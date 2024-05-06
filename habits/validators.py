@@ -1,5 +1,7 @@
 from rest_framework.exceptions import ValidationError
 
+from habits.models import Habit
+
 
 class LinkRewardValidator:
     """Validator for linked_habit and reward."""
@@ -8,9 +10,14 @@ class LinkRewardValidator:
         self.linked_habit = linked_habit
         self.reward = reward
 
-    def __call__(self):
-        if self.linked_habit and self.reward:
-            raise ValidationError("Признак связи и награда не могут быть заданы одновременно.")
+    def __call__(self, value):
+        value_dict = dict(value)
+        val_1 = value_dict.get(self.linked_habit)
+        val_2 = value_dict.get(self.reward)
+        if val_1 and val_2:
+            raise ValidationError(
+                "Признак связи и награда не могут быть заданы одновременно."
+            )
 
 
 class LinkedHabitValidator:
@@ -19,8 +26,9 @@ class LinkedHabitValidator:
     def __init__(self, linked_habit):
         self.linked_habit = linked_habit
 
-    def __call__(self):
-        if self.linked_habit and not self.linked_habit.is_pleasant:
+    def __call__(self, value):
+        value = dict(value).get(self.linked_habit)
+        if value and Habit.objects.filter(id=value.id, is_pleasant=False).exists():
             raise ValidationError("Связанная привычка должна быть приятной.")
 
 
@@ -32,6 +40,12 @@ class PleasantHabitValidator:
         self.reward = reward
         self.linked_habit = linked_habit
 
-    def __call__(self):
-        if self.is_pleasant and (self.reward or self.linked_habit):
-            raise ValidationError("У приятной привычки не должно быть награды или связанной привычки.")
+    def __call__(self, value):
+        value_dict = dict(value)
+        val_1 = value_dict.get(self.is_pleasant)
+        val_2 = value_dict.get(self.reward)
+        val_3 = value_dict.get(self.linked_habit)
+        if val_1 and (val_2 or val_3):
+            raise ValidationError(
+                "У приятной привычки не должно быть награды или связанной привычки."
+            )
