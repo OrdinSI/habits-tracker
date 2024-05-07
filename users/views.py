@@ -2,7 +2,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
 from users.models import User
-from users.permissions import IsOwner, IsAdmin
+from users.permissions import IsAdmin, IsSelf
 from users.serializers import UserSerializer
 
 
@@ -21,7 +21,7 @@ class UserViewSet(ModelViewSet):
         if self.action == "create":
             self.permission_classes = [AllowAny]
         else:
-            self.permission_classes = [IsAuthenticated, IsOwner | IsAdmin]
+            self.permission_classes = [IsAuthenticated, IsSelf | IsAdmin]
         return super().get_permissions()
 
     def get_queryset(self):

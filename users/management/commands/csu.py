@@ -19,3 +19,4 @@ class Command(BaseCommand):
 
         user.set_password(os.getenv("ADMIN_PASSWORD"))
         user.save()
+        self.stdout.write(self.style.SUCCESS("Superuser created."))

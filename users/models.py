@@ -9,6 +9,7 @@ class User(AbstractUser):
     username = None
     email = models.EmailField(unique=True, verbose_name="почта")
     phone = models.CharField(max_length=35, verbose_name="телефон", **settings.NULLABLE)
+    chat_id = models.IntegerField(verbose_name="id телеграмма", **settings.NULLABLE)
     city = models.CharField(max_length=35, verbose_name="город", **settings.NULLABLE)
     avatar = models.ImageField(
         upload_to="users/avatars", verbose_name="аватар", **settings.NULLABLE
