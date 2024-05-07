@@ -6,6 +6,7 @@ from config import settings
 
 class WeekDay(models.Model):
     """Model definition for WeekDay."""
+
     DAY_CHOICES = [
         (1, "Monday"),
         (2, "Tuesday"),
@@ -16,7 +17,9 @@ class WeekDay(models.Model):
         (7, "Sunday"),
     ]
 
-    day = models.IntegerField(verbose_name="день недели", choices=DAY_CHOICES, unique=True)
+    day = models.IntegerField(
+        verbose_name="день недели", choices=DAY_CHOICES, unique=True
+    )
 
     def __str__(self):
         return self.get_day_display()

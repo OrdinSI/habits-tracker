@@ -12,10 +12,7 @@ logger = logging.getLogger(__name__)
 def send_message(chat_id, message):
     """Function for sending message to user"""
 
-    data = {
-        "chat_id": chat_id,
-        "text": message
-    }
+    data = {"chat_id": chat_id, "text": message}
 
     url = f"https://api.telegram.org/bot{settings.BOT_TOKEN}/sendMessage"
     response = requests.post(url, data=data)
@@ -37,9 +34,13 @@ def check_habits():
             logger.info(current_local_time.time())
             if habit.days.filter(day=current_weekday).exists():
                 if past_time.time() <= habit.time <= future_time.time():
-                    message = f"В {habit.time} необходимо выполнить привычку: {habit.action}"
+                    message = (
+                        f"В {habit.time} необходимо выполнить привычку: {habit.action}"
+                    )
                     if habit.linked_habit:
-                        message += f"\n\nСвязанная привычка: {habit.linked_habit.action}"
+                        message += (
+                            f"\n\nСвязанная привычка: {habit.linked_habit.action}"
+                        )
                     elif habit.reward:
                         message += f"\n\nНаграда: {habit.reward}"
                     else:

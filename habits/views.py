@@ -3,6 +3,7 @@ from rest_framework.generics import (
     ListAPIView,
     RetrieveAPIView,
     UpdateAPIView,
+    DestroyAPIView,
 )
 from rest_framework.permissions import IsAuthenticated
 
@@ -53,7 +54,7 @@ class HabitUpdateAPIView(UpdateAPIView):
     permission_classes = [IsAuthenticated, IsOwner | IsAdmin]
 
 
-class HabitDeleteAPIView(RetrieveAPIView):
+class HabitDeleteAPIView(DestroyAPIView):
     """Class for deleting a habit."""
 
     serializer_class = HabitSerializer

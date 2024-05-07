@@ -1,9 +1,6 @@
-import os
-
 from django.core.management import BaseCommand
 
 from habits.models import WeekDay
-from users.models import User
 
 
 class Command(BaseCommand):
@@ -17,7 +14,7 @@ class Command(BaseCommand):
             WeekDay(day=4),  # Thursday
             WeekDay(day=5),  # Friday
             WeekDay(day=6),  # Saturday
-            WeekDay(day=7)   # Sunday
+            WeekDay(day=7),  # Sunday
         ]
         WeekDay.objects.bulk_create(week_days)
         self.stdout.write(self.style.SUCCESS("Week days created"))
