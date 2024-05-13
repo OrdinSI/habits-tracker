@@ -25,15 +25,10 @@ def check_habits():
         habits = Habit.objects.filter(is_pleasant=False, owner__chat_id__isnull=False)
         current_time = timezone.now()
         current_local_time = current_time.astimezone(timezone.get_current_timezone())
-        future_time = current_local_time + timezone.timedelta(minutes=10)
-        past_time = current_local_time - timezone.timedelta(minutes=1)
-        current_weekday = current_local_time.weekday() + 1
-        logger.info(current_weekday)
+        date_now = current_local_time.today()
         for habit in habits:
-            logger.info(habit.time)
-            logger.info(current_local_time.time())
-            if habit.days.filter(day=current_weekday).exists():
-                if past_time.time() <= habit.time <= future_time.time():
+            if habit.date == date_now or not habit.date:
+                if habit.time >= current_local_time.time():
                     message = (
                         f"В {habit.time} необходимо выполнить привычку: {habit.action}"
                     )
@@ -46,5 +41,7 @@ def check_habits():
                     else:
                         message += "\n\nНаграда отсутствует"
                     send_message(habit.owner.chat_id, message)
+                habit.date = date_now + timezone.timedelta(days=habit.periodicity)
+                habit.save()
     except Exception as e:
         print(f"Error: {e}")

@@ -1,32 +1,6 @@
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 from config import settings
-
-
-class WeekDay(models.Model):
-    """Model definition for WeekDay."""
-
-    DAY_CHOICES = [
-        (1, "Monday"),
-        (2, "Tuesday"),
-        (3, "Wednesday"),
-        (4, "Thursday"),
-        (5, "Friday"),
-        (6, "Saturday"),
-        (7, "Sunday"),
-    ]
-
-    day = models.IntegerField(
-        verbose_name="день недели", choices=DAY_CHOICES, unique=True
-    )
-
-    def __str__(self):
-        return self.get_day_display()
-
-    class Meta:
-        verbose_name = "день недели"
-        verbose_name_plural = "дни недели"
 
 
 class Habit(models.Model):
@@ -45,26 +19,18 @@ class Habit(models.Model):
     linked_habit = models.ForeignKey(
         "self", on_delete=models.SET_NULL, verbose_name="связь", **settings.NULLABLE
     )
-    days = models.ManyToManyField(WeekDay, verbose_name="дни(периодичность)")
+    periodicity = models.IntegerField(default=1, verbose_name="периодичность(дни)")
     reward = models.CharField(
         max_length=250, verbose_name="награда", **settings.NULLABLE
     )
     execution_time = models.IntegerField(
-        default=10,
-        verbose_name="время на выполнение(сек)",
-        validators=[MinValueValidator(1), MaxValueValidator(120)],
+        default=10, verbose_name="время на выполнение(сек)"
     )
     is_public = models.BooleanField(verbose_name="признак публичности", default=False)
+    date = models.DateField(verbose_name="дата", **settings.NULLABLE)
 
     def __str__(self):
         return self.action
-
-    def save(self, *args, **kwargs):
-        is_new = self._state.adding
-        super().save(*args, **kwargs)
-        if is_new:
-            all_days = WeekDay.objects.all()
-            self.days.set(all_days)
 
     class Meta:
         verbose_name = "привычка"

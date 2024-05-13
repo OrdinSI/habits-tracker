@@ -49,3 +49,27 @@ class PleasantHabitValidator:
             raise ValidationError(
                 "У приятной привычки не должно быть награды или связанной привычки."
             )
+
+
+class PeriodicityValidator:
+    """Validator for periodicity."""
+
+    def __init__(self, periodicity):
+        self.periodicity = periodicity
+
+    def __call__(self, value):
+        value = dict(value).get(self.periodicity)
+        if isinstance(value, int) and (value > 7 or value < 1):
+            raise ValidationError("Периодичность должна быть от 1 до 7.")
+
+
+class ExecutionTimeValidator:
+    """Validator for execution_time."""
+
+    def __init__(self, execution_time):
+        self.execution_time = execution_time
+
+    def __call__(self, value):
+        value = dict(value).get(self.execution_time)
+        if isinstance(value, int) and (value > 120 or value < 1):
+            raise ValidationError("Время выполнения должно быть от 1 до 120 секунд.")

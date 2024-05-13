@@ -1,19 +1,17 @@
-from rest_framework.serializers import ModelSerializer, PrimaryKeyRelatedField
+from rest_framework.serializers import ModelSerializer
 
-from habits.models import Habit, WeekDay
+from habits.models import Habit
 from habits.validators import (
     LinkRewardValidator,
     LinkedHabitValidator,
     PleasantHabitValidator,
+    PeriodicityValidator,
+    ExecutionTimeValidator,
 )
 
 
 class HabitSerializer(ModelSerializer):
     """Serializer for Habit model."""
-
-    days = PrimaryKeyRelatedField(
-        many=True, queryset=WeekDay.objects.all(), required=False
-    )
 
     class Meta:
         model = Habit
@@ -24,4 +22,6 @@ class HabitSerializer(ModelSerializer):
             PleasantHabitValidator(
                 is_pleasant="is_pleasant", reward="reward", linked_habit="linked_habit"
             ),
+            PeriodicityValidator(periodicity="periodicity"),
+            ExecutionTimeValidator(execution_time="execution_time"),
         ]
