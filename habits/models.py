@@ -19,11 +19,11 @@ class Habit(models.Model):
     linked_habit = models.ForeignKey(
         "self", on_delete=models.SET_NULL, verbose_name="связь", **settings.NULLABLE
     )
-    periodicity = models.IntegerField(default=1, verbose_name="периодичность(дни)")
+    periodicity = models.PositiveSmallIntegerField(default=1, verbose_name="периодичность(дни)")
     reward = models.CharField(
         max_length=250, verbose_name="награда", **settings.NULLABLE
     )
-    execution_time = models.IntegerField(
+    execution_time = models.PositiveSmallIntegerField(
         default=10, verbose_name="время на выполнение(сек)"
     )
     is_public = models.BooleanField(verbose_name="признак публичности", default=False)
