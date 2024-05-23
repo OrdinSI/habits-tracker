@@ -1,24 +1,35 @@
-## Настройка проекта
+## Запуск проекта с использованием Docker
 
-### Настройка временной зоны
-Убедитесь, что временная зона настроена правильно в файле `config.settings.py`:
-- Измените `CELERY_TIMEZONE` и `TIME_ZONE` на актуальную для вашего региона.
+### Шаги по запуску
 
-### Запуск Celery
-Для запуска фоновых задач используйте Celery. Запустите worker и beat для обработки задач:
-
-1. Запуск worker:
+1. **Клонируйте репозиторий**
     ```bash
-    celery -A config worker -l INFO
-    ```
-2. Запуск beat с использованием планировщика задач Django:
-    ```bash
-    celery -A config beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    git clone https://github.com/OrdinSI/habits-tracker.git
+    cd habits-tracker
     ```
 
-### Создание суперпользователя
-Для доступа к административной панели создайте суперпользователя с помощью следующей команды:
+2. **Скопируйте пример файла окружения и отредактируйте его**
+    ```bash
+    cp .env.example .env
+    ```
+
+3. **Постройте и запустите контейнеры Docker**
+    ```bash
+    docker-compose up  -d --build
+    ```
+
+4. **Создание суперпользователя**
+    ```bash
+    docker-compose exec app python manage.py csu
+    ```
+
+### Доступ к приложению
+
+- Приложение будет доступно по адресу: [http://localhost:8000](http://localhost:8000)
+- Админ панель Django: [http://localhost:8000/admin](http://localhost:8000/admin)
+
+### Остановка контейнеров
+Для остановки контейнеров используйте следующую команду:
 
 ```bash
-python manage.py csu
-```
+docker-compose down
